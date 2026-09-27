@@ -1,4 +1,4 @@
-# Cubacadabra ios app
+# Cubacadabra iOS app
 
 This is the Swift platform client. It loads a selected game package from a
 web host, uses Rust static libraries for simulation, Luau execution, Metal
@@ -12,7 +12,7 @@ game repos  -> src/ + manifest.json (source packages)
 rust        -> static libraries (engine, client session, app state)
 web         -> package host and browser client
 backend     -> multiplayer Worker and world WebSockets
-ios_app     -> this Swift adapter (touch, lifecycle, MTKView, networking)
+ios         -> this Swift adapter (touch, lifecycle, MTKView, networking)
 ```
 
 When starting here, read [rust/README.md](../rust/README.md) next to understand
@@ -35,7 +35,7 @@ npm install
 npm run dev
 ```
 
-Open `ios_app/cubacadabra.xcodeproj` in Xcode, select the shared `cubacadabra`
+Open `ios/cubacadabra.xcodeproj` in Xcode, select the shared `cubacadabra`
 scheme, choose an iOS Simulator, and Run. The Debug build defaults to:
 
 ```text
