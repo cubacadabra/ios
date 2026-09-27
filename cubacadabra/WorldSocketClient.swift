@@ -428,12 +428,14 @@ final class WorldSocketClient {
     func sendRawText(_ text: String) -> ExperienceSendResult {
         guard !text.isEmpty, text.utf8.count <= 65_536 else { return .invalid }
         guard !stopped, worldID != nil else { return .unavailable }
+        let liveCubeMove = Self.isCubeMove(text)
         guard let socketTask, socketTask.state == .running else {
+            if liveCubeMove { return .unavailable }
             enqueueExperienceMessage(text)
             return .queued
         }
         socketTask.send(.string(text)) { [weak self, weak socketTask] error in
-            guard error != nil, let self, let socketTask else { return }
+            guard error != nil, !liveCubeMove, let self, let socketTask else { return }
             Task { @MainActor in
                 guard self.isCurrent(socketTask, generation: self.generation) else { return }
                 self.enqueueExperienceMessage(text)
@@ -486,6 +488,7 @@ final class WorldSocketClient {
 
     private func scheduleReconnect(generation expectedGeneration: Int) {
         guard !stopped, expectedGeneration == generation else { return }
+        pendingExperienceMessages.removeAll(where: Self.isCubeMove)
         reconnectAttempt += 1
         onStateChange(.reconnecting)
         let exponent = min(reconnectAttempt - 1, 4)
@@ -504,12 +507,22 @@ final class WorldSocketClient {
     }
 
     private func closeCurrentSocket() {
+        pendingExperienceMessages.removeAll(where: Self.isCubeMove)
         receiveTask?.cancel()
         receiveTask = nil
         reconnectTask?.cancel()
         reconnectTask = nil
         socketTask?.cancel(with: .goingAway, reason: nil)
         socketTask = nil
+    }
+
+    private static func isCubeMove(_ text: String) -> Bool {
+        guard text.contains("\"world_block_move\""),
+              let data = text.data(using: .utf8),
+              let event = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return false
+        }
+        return event["type"] as? String == "world_block_move"
     }
 
     private static func loadPlayerID() -> String {
