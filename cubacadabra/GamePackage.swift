@@ -64,7 +64,7 @@ struct GamePackageLoader {
     private static let modelPathPattern = "^assets/(?:[A-Za-z0-9_-][A-Za-z0-9._-]*/)*[A-Za-z0-9_-][A-Za-z0-9._-]*\\.glb$"
 
     func load(
-        gameID: String = "first-game",
+        gameID: String = GameCatalogEntry.defaultGameID,
         packageBaseURL: URL? = nil,
         additionalMorphPackURLs: [URL] = []
     ) async throws -> LoadedGamePackage {
@@ -113,7 +113,7 @@ struct GamePackageLoader {
 
     /// Refreshes the validated package for the next launch. The bundled
     /// package for each game remains the offline fallback if the host is unavailable.
-    func refreshPackage(gameID: String = "first-game") async {
+    func refreshPackage(gameID: String = GameCatalogEntry.defaultGameID) async {
         guard Self.isValidGameID(gameID) else { return }
         let baseURL = remoteBaseURL(for: gameID)
         let manifestURL = baseURL.appendingPathComponent("manifest.json")

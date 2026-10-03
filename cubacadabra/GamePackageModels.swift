@@ -155,22 +155,29 @@ struct GameCatalogEntry: Identifiable, Equatable {
     static var available: [GameCatalogEntry] {
         [
             GameCatalogEntry(
+                id: "heavy2",
+                title: "Cuboom",
+                subtitle: "Restore letter strokes and build a tower together"
+            ),
+            GameCatalogEntry(
                 id: "first-game",
-                title: "First Game",
+                title: "Spellbound Schoolyard",
                 subtitle: "Build together in the clearing"
             ),
             GameCatalogEntry(
                 id: "second-game",
-                title: "Second Game",
+                title: "Signal Run",
                 subtitle: "Drop signals in the relay yard"
             ),
             GameCatalogEntry(
                 id: "third-game",
-                title: "Third Game",
+                title: "Capability Probe",
                 subtitle: "Probe every world capability"
             ),
         ]
     }
+
+    static var defaultGameID: String { available[0].id }
 }
 
 struct LaunchRoute: Decodable { let destinationWorld: String }
@@ -390,11 +397,11 @@ enum ClientConfiguration {
     // web client. On some hosts `localhost` resolves to ::1 while the local
     // worker only listens on 127.0.0.1, making the morph catalog unavailable.
     private static let defaultBackendURL = "ws://127.0.0.1:8787"
-    private static let defaultGameBaseURL = "http://localhost:5173/games/first-game/"
+    private static let defaultGameBaseURL = "http://localhost:5173/games/heavy2/"
     private static let defaultLoginURL = "http://localhost:5173/login/"
 #else
     private static let defaultBackendURL = "wss://api.cubacadabra.com"
-    private static let defaultGameBaseURL = "https://cubacadabra.com/games/first-game/"
+    private static let defaultGameBaseURL = "https://cubacadabra.com/games/heavy2/"
     private static let defaultLoginURL = "https://cubacadabra.com/login/"
 #endif
 

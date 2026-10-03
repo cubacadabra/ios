@@ -11,14 +11,14 @@ if [ -z "${TARGET_BUILD_DIR:-}" ] || [ -z "${UNLOCALIZED_RESOURCES_FOLDER_PATH:-
 fi
 bundle_resources_destination="$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH"
 
-if [ ! -f "$tools_dir/pyproject.toml" ] || [ ! -d "$tools_dir/src/cubacadabra" ]; then
+if [ ! -f "$tools_dir/scripts/cubacadabra.sh" ]; then
   echo "The shared Cubacadabra tools checkout is missing: $tools_dir" >&2
   exit 1
 fi
 
 sync_game_package() {
   game_id="$1"
-  game_project="$project_dir/../$game_id"
+  game_project="$project_dir/../examples/${2:-$game_id}"
   package_build="$game_package_build/$game_id"
   package_destination="$bundle_resources_destination/games/$game_id"
   manifest_destination="$package_destination/manifest.json"
@@ -35,8 +35,7 @@ sync_game_package() {
   if [ -d "$package_build" ] && [ ! -f "$package_build/.cubacadabra-build" ]; then
     rm -rf "$package_build"
   fi
-  PYTHONPATH="$tools_dir/src${PYTHONPATH:+:$PYTHONPATH}" \
-    python3 -m cubacadabra build-game "$game_project" --output "$package_build"
+  sh "$tools_dir/scripts/cubacadabra.sh" build-game "$game_project" --output "$package_build"
   mkdir -p "$package_destination"
   cp "$package_build/package.json" "$package_destination/package.json"
   cp "$package_build/manifest.json" "$manifest_destination"
@@ -50,3 +49,10 @@ sync_game_package() {
 for game_id in first-game second-game third-game; do
   sync_game_package "$game_id"
 done
+
+# Cuboom retains its existing package identity independently of its folder name.
+sync_game_package heavy2 cuboom
+
+mkdir -p "$bundle_resources_destination/licenses"
+cp "$project_dir/LICENSE" "$project_dir/COPYRIGHT" "$bundle_resources_destination/licenses/"
+cp "$project_dir/../rust/assets/fonts/"*-OFL.txt "$bundle_resources_destination/licenses/"

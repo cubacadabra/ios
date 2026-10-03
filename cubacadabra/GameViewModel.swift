@@ -103,7 +103,7 @@ final class GameViewModel: ObservableObject {
     @Published var buildColor = "coral"
     @Published var buildActionNotice: String?
     @Published var hasEnteredGame = false
-    @Published var selectedGameID = "first-game"
+    @Published var selectedGameID = GameCatalogEntry.defaultGameID
     @Published var selectedGame = GameCatalogEntry.available[0]
     @Published var isSelectingGame = false
     @Published var sprinting = false
@@ -220,7 +220,7 @@ final class GameViewModel: ObservableObject {
             lastTick = nil
             isLoading = false
             Task { [weak self] in
-                await self?.loader.refreshPackage(gameID: "first-game")
+                await self?.loader.refreshPackage(gameID: GameCatalogEntry.defaultGameID)
             }
         } catch {
             guard generation == gameLoadGeneration, !Task.isCancelled else { return }

@@ -8,17 +8,20 @@ world service for player presence and movement.
 The repositories fit together like this:
 
 ```text
-game repos  -> src/ + manifest.json (source packages)
+examples    -> game source projects, including Cuboom
 rust        -> static libraries (engine, client session, app state)
 web         -> package host and browser client
 backend     -> multiplayer Worker and world WebSockets
 ios         -> this Swift adapter (touch, lifecycle, MTKView, networking)
 ```
 
-When starting here, read [rust/README.md](../rust/README.md) next to understand
-the library and C ABI, then [first-game/README.md](../first-game/README.md) to
-understand the package this app loads. The web server is still required even
+When starting here, read [rust/README.md](https://github.com/cubacadabra/rust/blob/main/README.md) next to understand
+the library and C ABI, then [Cuboom](https://github.com/cubacadabra/examples/blob/main/cuboom/README.md) to
+understand the default game. The web server is still required even
 when the app itself is the client.
+
+Cuboom keeps its existing `heavy2` package ID for URL and session compatibility.
+This is a pre-launch client; device behavior needs review alongside the shared runtime.
 
 ## Run in the iOS Simulator
 
@@ -39,12 +42,12 @@ Open `ios/cubacadabra.xcodeproj` in Xcode, select the shared `cubacadabra`
 scheme, choose an iOS Simulator, and Run. The Debug build defaults to:
 
 ```text
-Game package: http://localhost:5173/games/first-game/
+Game package: http://localhost:5173/games/heavy2/
 Backend:      ws://localhost:8787
 ```
 
-The Xcode build phases build all three sibling game packages through the shared
-`tools` repository and copy their runtime files into the final app bundle under
+The Xcode build phases build four game sources from `../examples` (Cuboom and the three small probes) through the shared native
+`tools` builder and copy their runtime files into the final app bundle under
 `games/<game-id>/manifest.json` and `games/<game-id>/game.luau`. The Rust phase
 then compiles the native engine and app state for the selected iOS target and
 links the resulting static libraries. You do not need to build Rust separately
@@ -72,7 +75,7 @@ with the Mac's LAN IP:
 
 ```text
 CUBACADABRA_BACKEND_URL=ws://192.168.1.10:8787
-CUBACADABRA_GAME_BASE_URL=http://192.168.1.10:5173/games/first-game/
+CUBACADABRA_GAME_BASE_URL=http://192.168.1.10:5173/games/heavy2/
 ```
 
 The device and Mac must be on the same network. Local networking is enabled in
@@ -83,8 +86,8 @@ the app's `Info.plist`; the Mac may still ask for firewall permission.
 Release builds default to the deployed services:
 
 ```text
-Game package: https://cubacadabra.com/games/first-game/
-Backend:      wss://cubacadabra.andrew-f97.workers.dev
+Game package: https://cubacadabra.com/games/heavy2/
+Backend:      wss://api.cubacadabra.com
 ```
 
 To test production endpoints from a Debug build, keep the Debug scheme and set
@@ -105,10 +108,10 @@ the Xcode build.
 
 ## Where to look next
 
-- [rust/README.md](../rust/README.md) — engine and native ABI
-- [first-game/README.md](../first-game/README.md) — first-game package schema
-- [second-game/README.md](../second-game/README.md) — second-game package behavior
-- [backend/README.md](../backend/README.md) — local, LAN, and production sockets
+- [rust/README.md](https://github.com/cubacadabra/rust/blob/main/README.md) — engine and native ABI
+- [Cuboom](https://github.com/cubacadabra/examples/blob/main/cuboom/README.md) — default game and contribution priorities
+- [second-game/README.md](https://github.com/cubacadabra/examples/blob/main/second-game/README.md) — second-game package behavior
+- [backend/README.md](https://github.com/cubacadabra/backend/blob/main/README.md) — local, LAN, and production sockets
 
 ### Licensing
 

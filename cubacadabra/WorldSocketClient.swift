@@ -26,7 +26,7 @@ final class WorldSocketClient {
     private var generation = 0
     private var reconnectAttempt = 0
     private var stopped = true
-    private var gameID = "first-game"
+    private var gameID = GameCatalogEntry.defaultGameID
     private var worldConfigs: [String: WorldServerSettings] = [:]
     private var lastMoveSentAt = Date.distantPast.timeIntervalSinceReferenceDate
     private var lastSentMove: SentMove?
